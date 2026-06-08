@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>WWDC 2026 Keynote Bingo</title>
+<style>
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #000000;
+    --card: rgba(28, 28, 30, 0.9);
+    --cell-bg: rgba(28, 28, 30, 0.65);
+    --cell-hover: rgba(44, 44, 46, 0.8);
+    --glow-purple: #8E8EFF;
+    --glow-cyan: #00D4FF;
+    --glow-pink: #FF6B9D;
+    --text: #FFFFFF;
+    --text-dim: #8E8E93;
+    --hairline: rgba(255, 255, 255, 0.08);
+    --gold: #FFD60A;
+    --filled-bg: rgba(142, 142, 255, 0.12);
+    --filled-border: rgba(142, 142, 255, 0.4);
+    --spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 16px);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .ambient-glow {
+    position: fixed;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(ellipse at center,
+      rgba(142, 142, 255, 0.08) 0%,
+      rgba(0, 212, 255, 0.04) 30%,
+      rgba(255, 107, 157, 0.02) 50%,
+      transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: ambientShift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes ambientShift {
+    0% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  }
+
+  .container {
+    max-width: 680px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding-top: 12px;
+  }
+
+  .wwdc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    padding: 5px 14px 5px 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .wwdc-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--glow-pink);
+    animation: livePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--glow-pink); }
+    50% { opacity: 0.5; box-shadow: 0 0 8px var(--glow-pink); }
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 40%, var(--glow-purple) 60%, var(--glow-cyan) 80%, var(--glow-pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--hairline);
+    color: var(--text);
+    padding: 7px 15px;
+    border-radius: 18px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s var(--spring);
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    letter-spacing: 0.01em;
+  }
+
+  .toolbar button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.04);
+  }
+
+  .toolbar button:active {
+    transform: scale(0.96);
+    transition-duration: 0.1s;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin: 0 0 16px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .stats span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stats .count {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bingo-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .bingo-letter {
+    text-align: center;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 700;
+    padding: 4px 0;
+    letter-spacing: 0.08em;
+  }
+
+  .bingo-letter:nth-child(1) { color: var(--glow-pink); }
+  .bingo-letter:nth-child(2) { color: var(--glow-purple); }
+  .bingo-letter:nth-child(3) { color: var(--glow-cyan); }
+  .bingo-letter:nth-child(4) { color: #30D158; }
+  .bingo-letter:nth-child(5) { color: var(--gold); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .cell {
+    background: var(--cell-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: clamp(10px, 2vw, 16px) clamp(6px, 1.4vw, 10px);
+    text-align: center;
+    font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+    line-height: 1.35;
+    cursor: pointer;
+    transition: all 0.35s var(--spring);
+    position: relative;
+    overflow: hidden;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-user-select: none;
+    user-select: none;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+    animation: cellEnter 0.6s var(--spring) forwards;
+  }
+
+  @keyframes cellEnter {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .cell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(142, 142, 255, 0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .cell:hover {
+    background: var(--cell-hover);
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  .cell:hover::before { opacity: 1; }
+
+  .cell:active {
+    transform: scale(0.97);
+    transition-duration: 0.1s;
+  }
+
+  .cell.filled {
+    background: var(--filled-bg);
+    border-color: var(--filled-border);
+    box-shadow:
+      0 0 24px rgba(142, 142, 255, 0.15),
+      inset 0 0 24px rgba(142, 142, 255, 0.04);
+    animation: cellEnter 0.6s var(--spring) forwards, filledPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes filledPulse {
+    0%, 100% { box-shadow: 0 0 24px rgba(142, 142, 255, 0.15), inset 0 0 24px rgba(142, 142, 255, 0.04); }
+    50% { box-shadow: 0 0 36px rgba(142, 142, 255, 0.25), inset 0 0 36px rgba(142, 142, 255, 0.06); }
+  }
+
+  .cell.filled .cell-text {
+    opacity: 0.5;
+    text-decoration: line-through;
+    text-decoration-color: rgba(142, 142, 255, 0.6);
+  }
+
+  .cell.filled::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: var(--glow-purple);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--glow-purple);
+    animation: checkPop 0.3s var(--spring-bounce);
+  }
+
+  @keyframes checkPop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+
+  .cell.free {
+    background: linear-gradient(135deg, rgba(255, 214, 10, 0.1), rgba(255, 214, 10, 0.05));
+    border-color: rgba(255, 214, 10, 0.25);
+    cursor: default;
+    box-shadow: 0 0 30px rgba(255, 214, 10, 0.08);
+    animation: cellEnter 0.6s var(--spring) forwards;
+  }
+
+  .cell.free:hover {
+    transform: none;
+    background: linear-gradient(135deg, rgba(255, 214, 10, 0.1), rgba(255, 214, 10, 0.05));
+  }
+
+  .cell.free .cell-text {
+    font-weight: 600;
+    font-size: clamp(0.72rem, 1.7vw, 0.9rem);
+    background: linear-gradient(135deg, var(--gold), #FFF8DC, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cell .cell-text {
+    transition: all 0.3s var(--spring);
+    position: relative;
+    z-index: 1;
+  }
+
+  .celebration-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--spring);
+  }
+
+  .celebration-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .celebration-card {
+    background: rgba(28, 28, 30, 0.95);
+    border: 1px solid rgba(255, 214, 10, 0.3);
+    border-radius: 20px;
+    padding: 44px 52px;
+    text-align: center;
+    animation: celebrationPop 0.6s var(--spring-bounce);
+    box-shadow: 0 0 80px rgba(255, 214, 10, 0.15), 0 24px 80px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    max-width: 90vw;
+  }
+
+  @keyframes celebrationPop {
+    0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .celebration-card h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--gold), #FFF8DC, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+
+  .celebration-card p {
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+  }
+
+  .celebration-card button {
+    background: linear-gradient(135deg, var(--glow-purple), var(--glow-cyan));
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 32px;
+    border-radius: 22px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.25s var(--spring);
+    letter-spacing: 0.01em;
+  }
+
+  .celebration-card button:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 24px rgba(142, 142, 255, 0.3);
+  }
+
+  .celebration-card button:active {
+    transform: scale(0.96);
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    z-index: 101;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+
+  @keyframes confetti-fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  footer kbd {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.68rem;
+    font-family: inherit;
+  }
+
+  @media (max-width: 500px) {
+    .grid, .bingo-header { gap: 4px; }
+    .cell {
+      min-height: 60px;
+      padding: 8px 3px;
+      font-size: 0.58rem;
+      border-radius: 8px;
+    }
+    .cell.filled::after { width: 6px; height: 6px; top: 4px; right: 4px; }
+    .bingo-letter { font-size: 1.1rem; }
+    .toolbar button { padding: 6px 11px; font-size: 0.72rem; border-radius: 14px; }
+    .celebration-card { padding: 32px 28px; }
+    .celebration-card h2 { font-size: 1.6rem; }
+    header { margin-bottom: 20px; }
+    h1 { font-size: 1.5rem; }
+  }
+
+  @media print {
+    body { background: #FFFFFF; color: #111111; padding: 10mm; }
+    .ambient-glow { display: none; }
+    .cell {
+      border: 2px solid #CCCCCC !important;
+      background: #FFFFFF !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .cell.filled {
+      background: #F0ECFF !important;
+      border-color: var(--glow-purple) !important;
+    }
+    .cell.filled .cell-text {
+      -webkit-text-fill-color: #111111 !important;
+      text-decoration-color: var(--glow-purple) !important;
+      opacity: 0.7 !important;
+    }
+    .cell.filled::after { display: none; }
+    .cell.free {
+      border-color: var(--gold) !important;
+      background: #FFFDE0 !important;
+    }
+    .bingo-letter { color: #111111 !important; -webkit-text-fill-color: #111111 !important; }
+    .toolbar, .stats, footer, .celebration-overlay, .confetti { display: none !important; }
+    .subtitle { color: #666666 !important; }
+    .wwdc-badge { display: none; }
+    h1 {
+      background: none !important;
+      -webkit-text-fill-color: #111111 !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<div class="container">
+  <header>
+    <div class="wwdc-badge">
+      <span class="dot"></span>
+      Watch Party
+    </div>
+    <h1>WWDC 2026 Keynote Bingo</h1>
+    <p class="subtitle">June 8, 2026 &mdash; San Jose, California</p>
+  </header>
+
+  <div class="toolbar">
+    <button onclick="resetBoard()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Reset
+    </button>
+    <button onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print
+    </button>
+    <button onclick="shareBoard()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Share
+    </button>
+  </div>
+
+  <div class="stats">
+    <span>Marked: <span class="count" id="markCount">0</span> / 25</span>
+    <span>Bingos: <span class="count" id="bingoCount">0</span></span>
+  </div>
+
+  <div class="bingo-header" id="bingoHeader"></div>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <p>Tap cells to mark &bull; 5 in a row wins &bull; Center space is free</p>
+    <p style="margin-top: 3px"><kbd>P</kbd> print &nbsp; <kbd>R</kbd> reset &nbsp; <kbd>Esc</kbd> close</p>
+  </footer>
+</div>
+
+<div class="celebration-overlay" id="celebration" onclick="closeCelebration()">
+  <div class="celebration-card" onclick="event.stopPropagation()">
+    <h2>BINGO!</h2>
+    <p id="celebrationMsg">You got a bingo!</p>
+    <button onclick="closeCelebration()">Keep Watching</button>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  ["Craig Federighi takes the stage", "\"Siri\" said 50+ times", "\"Game changer\" spoken", "Tim Cook cameo", "\"Privacy\" referenced"],
+  ["Demo fails live", "\"We think you'll love it\"", "\"Most powerful ever\"", "Google/Gemini named", "\"One more thing...\""],
+  ["Siri chatbot demo", "AI photo editing demo", "\"Available this fall\"", "Foldable iPhone mentioned", "Mac Studio/Mini mentioned"],
+  ["Liquid Glass slider shown", "macOS name revealed", "Craig says \"boom\"", "NL shortcut demo", "Apple Cash receipt split"],
+  ["Camera Siri mode", "\"Beta\" tag on screen", "Third-party AI picker", "HomePad tease", "John Ternus appears"]
+];
+
+const LETTERS = ["B", "I", "N", "G", "O"];
+let cells = [];
+let bingoTriggered = false;
+
+function init() {
+  const header = document.getElementById("bingoHeader");
+  LETTERS.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "bingo-letter";
+    d.textContent = l;
+    header.appendChild(d);
+  });
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  cells = [];
+
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      const btn = document.createElement("div");
+      btn.className = "cell";
+      btn.style.animationDelay = `${(r * 5 + c) * 0.03}s`;
+
+      const isFree = r === 2 && c === 2;
+      const span = document.createElement("span");
+      span.className = "cell-text";
+
+      if (isFree) {
+        btn.classList.add("free", "filled");
+        span.textContent = "FREE SPACE";
+        cells.push({ el: btn, filled: true });
+      } else {
+        span.textContent = DATA[r][c];
+        cells.push({ el: btn, filled: false });
+      }
+
+      btn.appendChild(span);
+
+      if (!isFree) {
+        btn.addEventListener("click", () => toggleCell(cells[r * 5 + c], r, c));
+      }
+
+      grid.appendChild(btn);
+    }
+  }
+
+  updateStats();
+  checkBingo();
+}
+
+function toggleCell(cell, r, c) {
+  if (cell.el.classList.contains("free")) return;
+
+  cell.filled = !cell.filled;
+  cell.el.classList.toggle("filled", cell.filled);
+
+  if (navigator.vibrate) {
+    navigator.vibrate(cell.filled ? 10 : 5);
+  }
+
+  updateStats();
+  checkBingo();
+}
+
+function updateStats() {
+  const n = cells.filter(c => c.filled).length;
+  document.getElementById("markCount").textContent = n;
+}
+
+function checkBingo() {
+  const grid = cells.map(c => c.filled);
+  const lines = [];
+
+  for (let r = 0; r < 5; r++) lines.push(grid.slice(r * 5, r * 5 + 5));
+  for (let c = 0; c < 5; c++) lines.push([grid[c], grid[c + 5], grid[c + 10], grid[c + 15], grid[c + 20]]);
+  lines.push([grid[0], grid[6], grid[12], grid[18], grid[24]]);
+  lines.push([grid[4], grid[8], grid[12], grid[16], grid[20]]);
+
+  const bingos = lines.filter(l => l.every(Boolean)).length;
+  document.getElementById("bingoCount").textContent = bingos;
+
+  if (bingos > 0 && !bingoTriggered) {
+    bingoTriggered = true;
+    showCelebration();
+    launchConfetti();
+  }
+}
+
+function showCelebration() {
+  document.getElementById("celebration").classList.add("active");
+}
+
+function closeCelebration() {
+  document.getElementById("celebration").classList.remove("active");
+  bingoTriggered = false;
+}
+
+function launchConfetti() {
+  const colors = ["#FF6B9D", "#8E8EFF", "#00D4FF", "#30D158", "#FFD60A", "#FF9F0A", "#FFFFFF"];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement("div");
+    el.className = "confetti";
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (4 + Math.random() * 8) + "px";
+    el.style.height = (4 + Math.random() * 8) + "px";
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+    el.style.animation = `confetti-fall ${2 + Math.random() * 3}s linear ${Math.random() * 1.5}s forwards`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 6000);
+  }
+}
+
+function resetBoard() {
+  bingoTriggered = false;
+  closeCelebration();
+  document.querySelectorAll(".confetti").forEach(e => e.remove());
+  renderGrid();
+}
+
+function shareBoard() {
+  const marked = cells.map((c, i) => c.filled ? `${String.fromCharCode(65 + Math.floor(i / 5))}${i % 5 + 1}` : "").filter(Boolean).join(",");
+  const text = `My WWDC 2026 Bingo progress: ${cells.filter(c => c.filled).length}/25 marked!\n${marked ? "Marked: " + marked : "Fresh board!"}\n\nCan you beat me? #WWDC2026 #Bingo`;
+
+  if (navigator.share) {
+    navigator.share({ title: "WWDC 2026 Bingo", text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target.closest("button");
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+      setTimeout(() => btn.innerHTML = orig, 1500);
+    });
+  }
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "p" || e.key === "P") window.print();
+  if (e.key === "r" || e.key === "R") resetBoard();
+  if (e.key === "Escape") closeCelebration();
+});
+
+init();
+</script>
+</body>
+</html>

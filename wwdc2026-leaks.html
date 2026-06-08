@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WWDC 2026 — Everything Leaked</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-card: #161616;
+  --bg-card-hover: #1a1a1a;
+  --border: #222;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --text-muted: #6e6e73;
+  --accent-blue: #2997ff;
+  --accent-purple: #bf5af2;
+  --accent-orange: #ff9f0a;
+  --accent-green: #30d158;
+  --accent-red: #ff453a;
+  --accent-pink: #ff375f;
+  --gradient-main: linear-gradient(135deg, #bf5af2 0%, #2997ff 50%, #ff9f0a 100%);
+  --gradient-hero: linear-gradient(180deg, rgba(191,90,242,0.15) 0%, rgba(41,151,255,0.1) 40%, rgba(10,10,10,0) 100%);
+  --gradient-card: linear-gradient(145deg, rgba(191,90,242,0.08), rgba(41,151,242,0.04));
+  --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --max-width: 1200px;
+  --nav-height: 64px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-system);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { background: rgba(191,90,242,0.3); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+a { color: var(--accent-blue); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--accent-purple); }
+
+/* === NAV === */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(10,10,10,0.75);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  height: var(--nav-height);
+  transition: background 0.3s;
+}
+.nav.scrolled { background: rgba(10,10,10,0.95); }
+.nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+.nav-links a.active { color: var(--text-primary); background: rgba(255,255,255,0.1); }
+
+/* === HERO === */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  overflow: hidden;
+  background: var(--gradient-hero);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(191,90,242,0.12) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 60%, rgba(41,151,255,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 80%, rgba(255,159,10,0.06) 0%, transparent 50%);
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+@keyframes heroGlow {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(-2%,-1%) scale(1.02); }
+}
+.hero-content { position: relative; z-index: 1; max-width: 800px; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  backdrop-filter: blur(10px);
+}
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 {
+  font-size: clamp(48px, 8vw, 88px);
+  font-weight: 700;
+  letter-spacing: -2.5px;
+  line-height: 1.05;
+  margin-bottom: 24px;
+}
+.hero h1 .gradient-text {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: clamp(18px, 3vw, 24px);
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+}
+.hero-taglines {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.hero-tagline {
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+.hero-date {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+.hero-date strong { color: var(--text-secondary); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  max-width: 700px;
+  margin-top: 48px;
+}
+.hero-stat {
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  text-align: center;
+}
+.hero-stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* === SECTIONS === */
+.section {
+  padding: 100px 24px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.section-divider {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.section-header {
+  margin-bottom: 48px;
+}
+.section-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-purple);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+/* === CARDS === */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(191,90,242,0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+}
+.card:hover::before { opacity: 1; }
+.card-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+  background: rgba(191,90,242,0.1);
+  border: 1px solid rgba(191,90,242,0.15);
+}
+.card-icon.blue { background: rgba(41,151,255,0.1); border-color: rgba(41,151,255,0.15); }
+.card-icon.orange { background: rgba(255,159,10,0.1); border-color: rgba(255,159,10,0.15); }
+.card-icon.green { background: rgba(48,209,88,0.1); border-color: rgba(48,209,88,0.15); }
+.card-icon.red { background: rgba(255,69,58,0.1); border-color: rgba(255,69,58,0.15); }
+.card-icon.pink { background: rgba(255,55,95,0.1); border-color: rgba(255,55,95,0.15); }
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+.card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.card-list {
+  list-style: none;
+  margin-top: 16px;
+}
+.card-list li {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.card-list li:last-child { border-bottom: none; }
+.card-list li .marker {
+  width: 5px; height: 5px;
+  min-width: 5px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  margin-top: 7px;
+}
+.card-list li .marker.blue { background: var(--accent-blue); }
+.card-list li .marker.orange { background: var(--accent-orange); }
+.card-list li .marker.green { background: var(--accent-green); }
+
+/* === FEATURE LIST (full-width cards) === */
+.feature-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 20px;
+}
+.feature-block h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.feature-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px 24px;
+}
+.feature-list li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.feature-list li::before {
+  content: '';
+  width: 6px; height: 6px;
+  min-width: 6px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  margin-top: 7px;
+}
+
+/* === TABLE === */
+.confidence-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.confidence-table thead th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+}
+.confidence-table tbody td {
+  padding: 14px 20px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+.confidence-table tbody tr:last-child td { border-bottom: none; }
+.confidence-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge.high { background: rgba(48,209,88,0.12); color: var(--accent-green); }
+.badge.medium { background: rgba(255,159,10,0.12); color: var(--accent-orange); }
+.badge.low { background: rgba(255,69,58,0.12); color: var(--accent-red); }
+
+/* === TIMELINE === */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue), var(--accent-orange));
+  border-radius: 2px;
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 32px;
+}
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-dot {
+  position: absolute;
+  left: -32px; top: 6px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 3px solid var(--accent-purple);
+  z-index: 1;
+}
+.timeline-item:nth-child(2) .timeline-dot { border-color: var(--accent-blue); }
+.timeline-item:nth-child(3) .timeline-dot { border-color: var(--accent-green); }
+.timeline-item:nth-child(4) .timeline-dot { border-color: var(--accent-orange); }
+.timeline-item:nth-child(5) .timeline-dot { border-color: var(--accent-pink); }
+.timeline-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-purple);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.timeline-item:nth-child(2) .timeline-date { color: var(--accent-blue); }
+.timeline-item:nth-child(3) .timeline-date { color: var(--accent-green); }
+.timeline-item:nth-child(4) .timeline-date { color: var(--accent-orange); }
+.timeline-item:nth-child(5) .timeline-date { color: var(--accent-pink); }
+.timeline-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+.timeline-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* === WATCH LIST === */
+.watch-list {
+  list-style: none;
+  counter-reset: watch;
+}
+.watch-list li {
+  counter-increment: watch;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.watch-list li:hover {
+  border-color: rgba(191,90,242,0.3);
+  background: var(--bg-card-hover);
+}
+.watch-list li::before {
+  content: counter(watch);
+  min-width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(191,90,242,0.1);
+  color: var(--accent-purple);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* === FOOTER === */
+.footer {
+  text-align: center;
+  padding: 60px 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.footer p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.footer .timestamp {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 12px;
+  opacity: 0.6;
+}
+
+/* === HIGHLIGHT BOX === */
+.highlight-box {
+  background: linear-gradient(135deg, rgba(191,90,242,0.08), rgba(41,151,255,0.06));
+  border: 1px solid rgba(191,90,242,0.15);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin: 24px 0;
+}
+.highlight-box h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--accent-purple);
+}
+.highlight-box p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* === TAG === */
+.tag {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tag.new { background: rgba(48,209,88,0.12); color: var(--accent-green); }
+.tag.rumor { background: rgba(255,159,10,0.12); color: var(--accent-orange); }
+.tag.confirmed { background: rgba(41,151,255,0.12); color: var(--accent-blue); }
+.tag.major { background: rgba(191,90,242,0.12); color: var(--accent-purple); }
+
+/* === MOBILE === */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-grid { grid-template-columns: 1fr; }
+  .feature-list { grid-template-columns: 1fr; }
+  .section { padding: 60px 16px; }
+  .confidence-table { font-size: 13px; }
+  .confidence-table thead th,
+  .confidence-table tbody td { padding: 10px 12px; }
+}
+
+@media (max-width: 480px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero h1 { letter-spacing: -1.5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">WWDC 2026</div>
+    <div class="nav-links" id="navLinks">
+      <a href="#siri" class="active">Siri 2.0</a>
+      <a href="#ios27">iOS 27</a>
+      <a href="#macos27">macOS 27</a>
+      <a href="#other-os">Other OS</a>
+      <a href="#apple-intel">AI Expansion</a>
+      <a href="#hardware">Hardware</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#watch">Watch List</a>
+      <a href="#confidence">Consensus</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Leaked &amp; Confirmed — Updated June 2026
+    </div>
+    <h1>
+      WWDC 2026<br>
+      <span class="gradient-text">Everything Leaked</span>
+    </h1>
+    <p class="hero-subtitle">The most ambitious WWDC in Apple's history. Siri reborn. Platforms remade.</p>
+    <div class="hero-taglines">
+      <span class="hero-tagline">"Coming Bright Up"</span>
+      <span class="hero-tagline">"All Systems Glow"</span>
+    </div>
+    <p class="hero-date">
+      <strong>Keynote:</strong> June 8, 2026 &middot; 10:00 AM PT / 1:00 PM ET
+    </p>
+    <div class="hero-grid">
+      <div class="hero-stat">
+        <div class="hero-stat-number">10+</div>
+        <div class="hero-stat-label">OS Updates</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">Siri 2.0</div>
+        <div class="hero-stat-label">The Main Event</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">2nm</div>
+        <div class="hero-stat-label">Next-Gen Chips</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIRI 2.0 -->
+<div class="section-divider"></div>
+<section class="section" id="siri">
+  <div class="section-header">
+    <div class="section-eyebrow">The Main Event</div>
+    <h2 class="section-title">Siri 2.0 — A Complete Rebuild</h2>
+    <p class="section-desc">Apple's flagship AI overhaul. Powered by Gemini. Built as a standalone app. Designed to replace your relationship with apps themselves.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <h3>Gemini-Powered Core</h3>
+      <p>Apple's partnership with Google for Gemini integration, reportedly valued at ~$1B/year. Not a replacement of Apple's own models — a hybrid approach combining Google's frontier capabilities with Apple's on-device intelligence.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">💬</div>
+      <h3>Dedicated Siri App</h3>
+      <p>A full chatbot-style interface — think ChatGPT, but native. Syncs across devices via iCloud. Conversation history auto-deletes for privacy. Persistent across sessions but never stored long-term.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">📱</div>
+      <h3>Dynamic Island Integration</h3>
+      <p>Dark, glowing UI anchored in the Dynamic Island. Swipe down from top-center reveals a "Search or Ask" prompt. Siri becomes a persistent overlay, not a dismissed assistant.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon green">🎯</div>
+      <h3>Trigger Methods</h3>
+      <ul class="card-list">
+        <li><span class="marker green"></span>Wake word: "Hey Siri" (still supported)</li>
+        <li><span class="marker green"></span>Power button long-press</li>
+        <li><span class="marker green"></span>Swipe down from top-center of screen</li>
+        <li><span class="marker green"></span>Dynamic Island tap (contextual)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">⚡</div>
+      <h3>New Capabilities</h3>
+      <ul class="card-list">
+        <li><span class="marker"></span>Multi-command chaining in a single request</li>
+        <li><span class="marker"></span>On-screen context awareness (reads what you see)</li>
+        <li><span class="marker"></span>Personal data cross-reference across apps</li>
+        <li><span class="marker"></span>Deep App Intents integration for third-party actions</li>
+        <li><span class="marker"></span>Document and photo uploads for analysis</li>
+        <li><span class="marker"></span>Follow-up questions without re-triggering</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>In-House Web Search</h3>
+      <p>Apple building its own web search engine as a Perplexity competitor. Siri will surface web results natively without defaulting to Google. A seismic shift in Apple's search strategy — and potentially Google's biggest risk.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">🔒</div>
+      <h3>Privacy Architecture</h3>
+      <p>On-device processing for personal queries. Sensitive requests routed through Private Cloud Compute. No conversation data used for training. Auto-deletion policy enforced server-side.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">⚙️</div>
+      <h3>Release Status</h3>
+      <p>Internally labeled "beta" or "preview" — Apple managing expectations. Possible waitlist for early access. Phased rollout beginning with developer betas, widening through fall.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon red">⚔️</div>
+      <h3>OpenAI Tension</h3>
+      <p>ChatGPT integration buried in the new Siri. Reports of potential breach-of-contract claim from OpenAI. Apple pivoting away from being seen as a distribution channel for OpenAI's products.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon green">🔀</div>
+      <h3>Third-Party Model Picker</h3>
+      <p>Choose your brain: a dropdown lets users select between Claude, Gemini, and ChatGPT as Siri's backing model. An unprecedented move — Apple turning Siri into an AI model aggregator.</p>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>What This Means</h4>
+    <p>Siri 2.0 isn't an incremental update. It's Apple's full-throated entry into the AI assistant wars. By offering a model picker, Apple positions Siri as a neutral platform — while betting that most users will stay on the default (Gemini-powered) experience. The dedicated app and Dynamic Island integration suggest Siri becomes the primary interface for many iPhone interactions.</p>
+  </div>
+</section>
+
+<!-- iOS 27 -->
+<div class="section-divider"></div>
+<section class="section" id="ios27">
+  <div class="section-header">
+    <div class="section-eyebrow">Mobile Platform</div>
+    <h2 class="section-title">iOS 27</h2>
+    <p class="section-desc">The "Snow Leopard" year. A stability and refinement cycle that quietly lays groundwork for the foldable iPhone and transforms core apps with AI.</p>
+  </div>
+
+  <div class="feature-block">
+    <h3>🏔️ The "Snow Leopard" Philosophy</h3>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;">Apple is treating iOS 27 as a polish year — fixing bugs, improving performance, reducing regressions. Don't expect visual fireworks; expect things to <em>just work better</em>.</p>
+    <ul class="feature-list">
+      <li>Systemwide stability and performance focus</li>
+      <li>Bug reduction across all native apps</li>
+      <li>Reduced battery drain and thermal issues</li>
+      <li>Fewer "new features," more "things that work"</li>
+    </ul>
+  </div>
+
+  <div class="feature-block">
+    <h3>📱 Foldable iPhone Groundwork</h3>
+    <ul class="feature-list">
+      <li>Side-by-side app multitasking APIs</li>
+      <li>Adaptive layout system for 4:3 aspect ratio</li>
+      <li>Drag-and-drop between app halves</li>
+      <li>Continuity features across fold states</li>
+      <li>New UITraitCollection APIs for fold detection</li>
+      <li>Split View and Slide Over redesigned for inner display</li>
+    </ul>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📸</div>
+      <h3>Camera App Overhaul</h3>
+      <ul class="card-list">
+        <li><span class="marker blue"></span>Dedicated "Siri Mode" — voice-controlled photography</li>
+        <li><span class="marker blue"></span>Customizable controls layout</li>
+        <li><span class="marker blue"></span>Google reverse image search integration</li>
+        <li><span class="marker blue"></span>AI scene detection improvements</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">🖼️</div>
+      <h3>Photos — AI Editing</h3>
+      <ul class="card-list">
+        <li><span class="marker orange"></span>"Reframe" — AI recompose your shots</li>
+        <li><span class="marker orange"></span>"Extend" — generative fill / outpainting</li>
+        <li><span class="marker orange"></span>Natural language editing ("make the sky bluer")</li>
+        <li><span class="marker orange"></span>AI wallpaper generation from prompts</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon green">🌐</div>
+      <h3>Safari Redesign</h3>
+      <ul class="card-list">
+        <li><span class="marker green"></span>AI-powered tab organization</li>
+        <li><span class="marker green"></span>Redesigned start page</li>
+        <li><span class="marker green"></span>Smart tab groups based on browsing patterns</li>
+        <li><span class="marker green"></span>Reader mode AI summaries</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">💳</div>
+      <h3>Wallet Updates</h3>
+      <ul class="card-list">
+        <li><span class="marker"></span>Custom digital passes (design your own)</li>
+        <li><span class="marker"></span>Apple Cash receipt splitting</li>
+        <li><span class="marker"></span>Enhanced transit support</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">⚡</div>
+      <h3>Shortcuts — AI Automation</h3>
+      <p>Natural language automation: describe what you want in plain English and Shortcuts builds the workflow. Lowering the barrier from "power users" to "everyone."</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <h3>Systemwide Features</h3>
+      <ul class="card-list">
+        <li><span class="marker"></span>Grammar checker across all text fields</li>
+        <li><span class="marker"></span>Undo/redo on Home Screen layout changes</li>
+        <li><span class="marker"></span>Sliding keyboard option</li>
+        <li><span class="marker"></span>Notifications swipe from left (new gesture)</li>
+        <li><span class="marker"></span>AirPods settings reorganized in Settings</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>EU Compliance</h4>
+    <p>Third-party casting protocols finally arriving for the European market. Apple opening up AirPlay-equivalent functionality to competitors as part of Digital Markets Act compliance.</p>
+  </div>
+
+  <div class="feature-block" style="margin-top:20px;">
+    <h3>📋 Compatibility &amp; Design</h3>
+    <ul class="feature-list">
+      <li><strong>Supported devices:</strong> iPhone 12 and later (iPhone 11 dropped)</li>
+      <li><strong>Liquid Glass:</strong> New transparency/contrast slider for customization</li>
+      <li>Liquid Glass refinements based on iOS 26 feedback</li>
+      <li>Continued push toward more accessible design defaults</li>
+    </ul>
+  </div>
+</section>
+
+<!-- macOS 27 -->
+<div class="section-divider"></div>
+<section class="section" id="macos27">
+  <div class="section-header">
+    <div class="section-eyebrow">Desktop Platform</div>
+    <h2 class="section-title">macOS 27 — "Big Bear"</h2>
+    <p class="section-desc">The end of the Intel era. Apple Silicon only. The Mac goes touch-first — and gets a big cat name back.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card" style="border-color: rgba(255,69,58,0.2);">
+      <div class="card-icon red">🚫</div>
+      <h3>Intel Mac Support Dropped</h3>
+      <p style="color:var(--accent-red);font-weight:500;font-size:13px;margin-bottom:10px;">MAJOR CHANGE</p>
+      <p>macOS 27 ends Intel Mac compatibility. Apple Silicon only — M1 and later. The transition that began in 2020 is officially complete. Millions of Intel Macs lose support overnight.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">🔄</div>
+      <h3>Rosetta 2 Phase-Out</h3>
+      <p>Full Rosetta 2 support continues through macOS 27, then becomes limited in subsequent releases. The Rosetta 2 era is winding down. Native Apple Silicon is now the only first-class citizen.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">💻</div>
+      <h3>Supported Hardware</h3>
+      <ul class="card-list">
+        <li><span class="marker blue"></span>All M-series Macs (M1, M1 Pro/Max/Ultra, M2, M3, M4)</li>
+        <li><span class="marker blue"></span>MacBook Neo (A18 Pro chip) — the new entry-level Mac</li>
+        <li><span class="marker blue"></span>iMac, MacBook Air, MacBook Pro, Mac Mini, Mac Studio, Mac Pro (M2 Ultra+)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon green">🐻</div>
+      <h3>Naming: "Big Bear"</h3>
+      <p>Hashed flag filename in codebase references "Big Bear" — Apple returning to California landmark names. The "Big Bear" reference points to Big Bear Lake in the San Bernardino Mountains.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">📱</div>
+      <h3>Touch-Optimized UI</h3>
+      <p>Reports of a more touch-friendly interface layer. Larger hit targets, iOS-inspired gestures, and a UI that bridges the gap between Mac and iPad — fueling touchscreen Mac rumors.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <h3>CoreAI Framework</h3>
+      <p>New developer framework for integrating on-device AI into Mac apps. Brings the same Apple Intelligence capabilities from iOS to the desktop, with higher compute budgets thanks to Mac-class hardware.</p>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>The Big Picture</h4>
+    <p>macOS 27 is Apple drawing a hard line: the future is Apple Silicon. Dropping Intel now, phasing out Rosetta next. Combined with touch-optimized UI and CoreAI, this is Apple reshaping the Mac for the AI era — and cutting the cord to its x86 past.</p>
+  </div>
+</section>
+
+<!-- OTHER OS -->
+<div class="section-divider"></div>
+<section class="section" id="other-os">
+  <div class="section-header">
+    <div class="section-eyebrow">Platform Updates</div>
+    <h2 class="section-title">Every Other OS</h2>
+    <p class="section-desc">iPadOS, watchOS, visionOS, tvOS, and the new homeOS. Everything gets Siri 2.0 and the AI treatment.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon blue">📟</div>
+      <h3>iPadOS 27</h3>
+      <ul class="card-list">
+        <li><span class="marker blue"></span>Mirrors iOS 27 feature set</li>
+        <li><span class="marker blue"></span>Foldable iPad UI groundwork</li>
+        <li><span class="marker blue"></span>Continued pro-app differentiation</li>
+        <li><span class="marker blue"></span>Liquid Glass refinements</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon green">⌚</div>
+      <h3>watchOS 27</h3>
+      <ul class="card-list">
+        <li><span class="marker green"></span>Modular Ultra watch face variant</li>
+        <li><span class="marker green"></span>Siri 2.0 on wrist (with complications)</li>
+        <li><span class="marker green"></span>Grammar correction for dictation</li>
+        <li><span class="marker green"></span>Health AI improvements</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">🥽</div>
+      <h3>visionOS 27</h3>
+      <ul class="card-list">
+        <li><span class="marker orange"></span>Light on new features</li>
+        <li><span class="marker orange"></span>Inherits Siri 2.0 and Apple Intelligence</li>
+        <li><span class="marker orange"></span>Continued spatial computing refinements</li>
+        <li><span class="marker orange"></span>No major new hardware expected</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">📺</div>
+      <h3>tvOS 27</h3>
+      <ul class="card-list">
+        <li><span class="marker"></span>Minor updates + Siri integration</li>
+        <li><span class="marker"></span>Enhanced FaceTime features</li>
+        <li><span class="marker"></span>Held back for new Apple TV hardware</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon red">🏠</div>
+      <h3>homeOS</h3>
+      <p>The rumored new platform for HomePad. A dedicated smart home OS — not just a tvOS variant. Expected to power the 7-inch HomePad device with FaceTime and Siri-first interaction.</p>
+    </div>
+  </div>
+</section>
+
+<!-- APPLE INTELLIGENCE -->
+<div class="section-divider"></div>
+<section class="section" id="apple-intel">
+  <div class="section-header">
+    <div class="section-eyebrow">AI &amp; Intelligence</div>
+    <h2 class="section-title">Apple Intelligence Expansion</h2>
+    <p class="section-desc">Beyond Siri — Apple Intelligence becomes a platform. New dev tools, better writing, smarter images, and a grammar checker that changes everything.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🛠️</div>
+      <h3>CoreAI Framework</h3>
+      <p>New SDK for developers to integrate Apple Intelligence into their apps. On-device ML models, Private Cloud Compute access, and standardized AI APIs. The "Core ML 2.0" moment.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">✍️</div>
+      <h3>Writing Tools Upgrade</h3>
+      <p>Full grammar checker systemwide — not just in Mail, but in every text field. Proofread, rewrite, tone-adjust. The writing tools become invisible infrastructure for all text input.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">🎨</div>
+      <h3>Image Playground — New UI</h3>
+      <p>Redesigned interface for Apple's image generation tool. More styles, better control, easier access from Messages and Notes. Less toy-like, more capable.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon green">😀</div>
+      <h3>Suggested Genmoji</h3>
+      <p>AI proactively suggests custom emoji based on conversation context. See a reaction coming? Genmoji already has one ready. Reducing the friction of custom emoji creation.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">👁️</div>
+      <h3>Visual Intelligence → Camera</h3>
+      <p>Visual Intelligence (the Google Lens competitor) moves from a standalone feature into the Camera app itself. Point, shoot, understand. No mode switching needed.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📝</div>
+      <h3>Systemwide Grammar Checker</h3>
+      <p>Works everywhere — Messages, Notes, third-party apps via API. Catches grammar, spelling, punctuation, and style issues in real-time. Apple's answer to Grammarly, built into the OS.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HARDWARE -->
+<div class="section-divider"></div>
+<section class="section" id="hardware">
+  <div class="section-header">
+    <div class="section-eyebrow">Hardware Groundwork</div>
+    <h2 class="section-title">Hardware — Software Foundations</h2>
+    <p class="section-desc">WWDC 2026 isn't a hardware event, but the software reveals what's coming. Every major platform update is laying groundwork for hardware arriving later this year.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card" style="border-color: rgba(191,90,242,0.2);">
+      <div class="card-icon" style="background:rgba(191,90,242,0.15);">📱</div>
+      <h3>iPhone Fold / Ultra</h3>
+      <p style="font-size:12px;color:var(--accent-purple);font-weight:600;margin-bottom:8px;">SEPT 2026 &middot; ~$2,000–$2,500</p>
+      <ul class="card-list">
+        <li><span class="marker"></span>5.5" cover display + 7.8" inner OLED</li>
+        <li><span class="marker"></span>4.5mm titanium chassis when unfolded</li>
+        <li><span class="marker"></span>Touch ID (under-display, no Face ID notch)</li>
+        <li><span class="marker"></span>Apple's first foldable — the flagship of flags</li>
+        <li><span class="marker"></span>iOS 27 foldable APIs are built for this</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">📱</div>
+      <h3>iPhone 18 Pro / Pro Max</h3>
+      <p style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:8px;">SEPT 2026</p>
+      <ul class="card-list">
+        <li><span class="marker blue"></span>A20 Pro chip — first 2nm Apple silicon</li>
+        <li><span class="marker blue"></span>Variable aperture camera system</li>
+        <li><span class="marker blue"></span>Incremental design evolution</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">🖥️</div>
+      <h3>Mac Studio M5 Max / Ultra</h3>
+      <p style="font-size:12px;color:var(--accent-orange);font-weight:600;margin-bottom:8px;">DELAYED TO OCT 2026</p>
+      <p>Originally expected earlier. Delayed due to RAM shortage affecting high-bandwidth memory supply. M5 Ultra will be the most powerful Mac chip ever made.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon green">🖥️</div>
+      <h3>Mac Mini M5 / M5 Pro</h3>
+      <p style="font-size:12px;color:var(--accent-green);font-weight:600;margin-bottom:8px;">DELAYED</p>
+      <p>Also affected by the RAM shortage. The Mac Mini remains Apple's most accessible desktop — just arriving later than hoped.</p>
+    </div>
+    <div class="card" style="border-color: rgba(191,90,242,0.2);">
+      <div class="card-icon" style="background:rgba(191,90,242,0.15);">💻</div>
+      <h3>MacBook Pro OLED / Ultra</h3>
+      <p style="font-size:12px;color:var(--accent-purple);font-weight:600;margin-bottom:8px;">Q4 2026 &middot; FIRST TOUCHSCREEN MAC</p>
+      <ul class="card-list">
+        <li><span class="marker"></span>OLED display — first in a MacBook Pro</li>
+        <li><span class="marker"></span>First touchscreen Mac in history</li>
+        <li><span class="marker"></span>M6 chip (2nm) — leapfrogging M5</li>
+        <li><span class="marker"></span>macOS 27 touch-optimized UI built for this</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">📺</div>
+      <h3>Apple TV 4K (A17 Pro)</h3>
+      <p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:8px;">READY &middot; HELD FOR SIRI</p>
+      <p>Hardware is done. Apple is holding it for the Siri 2.0 experience. No point launching a new Apple TV without the new Siri — the entire pitch is the AI-powered living room.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">🔊</div>
+      <h3>HomePod mini 2</h3>
+      <p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:8px;">READY &middot; HELD FOR SIRI</p>
+      <p>Same story as Apple TV. Hardware ready, waiting for Siri 2.0 to be the headline feature. A HomePod without great Siri is just a speaker.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">🏠</div>
+      <h3>HomePad</h3>
+      <p style="font-size:12px;color:var(--accent-orange);font-weight:600;margin-bottom:8px;">RUMORED</p>
+      <ul class="card-list">
+        <li><span class="marker orange"></span>7-inch display</li>
+        <li><span class="marker orange"></span>A18 chip</li>
+        <li><span class="marker orange"></span>homeOS</li>
+        <li><span class="marker orange"></span>FaceTime camera</li>
+        <li><span class="marker orange"></span>Apple's smart home hub — a new product category</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon green">🎧</div>
+      <h3>AirPods Pro 3 / Ultra</h3>
+      <p style="font-size:12px;color:var(--accent-green);font-weight:600;margin-bottom:8px;">SEPT 2026</p>
+      <ul class="card-list">
+        <li><span class="marker green"></span>IR cameras for spatial awareness</li>
+        <li><span class="marker green"></span>Enhanced health monitoring</li>
+        <li><span class="marker green"></span>"Ultra" tier — new product line</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">⌚</div>
+      <h3>Apple Watch Series 12</h3>
+      <p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:8px;">SEPT 2026 &middot; INCREMENTAL</p>
+      <p>Not a redesign year. Health sensor improvements, watchOS 27 features, and efficiency gains. The big Watch redesign is further out.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon pink">📟</div>
+      <h3>iPad mini OLED</h3>
+      <p style="font-size:12px;color:var(--accent-pink);font-weight:600;margin-bottom:8px;">LATE 2026</p>
+      <p>The beloved small iPad finally gets an OLED panel. ProMotion, true blacks, and the full iPadOS 27 experience in a portable form factor.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon red">📷</div>
+      <h3>Security Camera + Video Doorbell</h3>
+      <p style="font-size:12px;color:var(--accent-red);font-weight:600;margin-bottom:8px;">LATE 2026</p>
+      <p>Apple entering the home security camera market. Deep HomeKit integration, on-device processing, and privacy-first design. The doorbell pairs with FaceTime on HomePad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="section-divider"></div>
+<section class="section" id="timeline">
+  <div class="section-header">
+    <div class="section-eyebrow">Release Calendar</div>
+    <h2 class="section-title">Timeline</h2>
+    <p class="section-desc">From keynote to public launch — the key dates for WWDC 2026 and everything that follows.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">June 8, 2026 — Today</div>
+      <div class="timeline-title">WWDC Keynote + State of the Union</div>
+      <div class="timeline-desc">Keynote at 10:00 AM PT. State of the Union follows. Developer betas available immediately. All major OS announcements. Siri 2.0 revealed. Craig Federighi likely running the show.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">July 2026</div>
+      <div class="timeline-title">Public Betas</div>
+      <div class="timeline-desc">iOS 27, macOS 27, watchOS 27, and all other public betas begin. Wider testing reveals more details about Siri 2.0, foldable APIs, and CoreAI framework.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">September 2026</div>
+      <div class="timeline-title">Public Release + iPhone Event</div>
+      <div class="timeline-desc">iOS 27 and all platforms ship publicly. iPhone 18 Pro and iPhone Fold launch. Siri 2.0 wide release (or waitlist opening). Tim Cook's last keynote — John Ternus succession widely rumored.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">October 2026</div>
+      <div class="timeline-title">Mac Studio M5 Ultra</div>
+      <div class="timeline-desc">Delayed Mac hardware finally ships. Mac Studio with M5 Max and M5 Ultra. Mac Mini M5/M5 Pro. The "one more thing" Mac event.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Q4 2026</div>
+      <div class="timeline-title">MacBook Pro OLED</div>
+      <div class="timeline-desc">The biggest MacBook Pro redesign in years. OLED display, M6 chip (2nm), first touchscreen Mac. macOS 27's touch-optimized UI finds its purpose. AirPods Pro 3/Ultra ship alongside.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WATCH LIST -->
+<div class="section-divider"></div>
+<section class="section" id="watch">
+  <div class="section-header">
+    <div class="section-eyebrow">Live Blog Priorities</div>
+    <h2 class="section-title">What to Watch</h2>
+    <p class="section-desc">The 10 things that will define whether WWDC 2026 is a triumph or a transition. Ranking the keynote moments by impact.</p>
+  </div>
+
+  <ol class="watch-list">
+    <li><strong>Siri demo quality</strong> — The single most important moment. If Siri 2.0 feels like magic, Apple wins the narrative. If it's clunky, the "beta" label becomes a crutch.</li>
+    <li><strong>"Beta" framing</strong> — How hard does Apple hedge? A "preview" label manages expectations but deflates excitement. The framing matters as much as the features.</li>
+    <li><strong>Third-party model picker depth</strong> — Is the Claude/Gemini/ChatGPT dropdown a real feature or a developer settings panel? Depth here determines if Apple is a platform or a gatekeeper.</li>
+    <li><strong>In-house search demo</strong> — If Apple demos its own web search and it's good, Google's search deal is in serious jeopardy. This is the sleeper story of WWDC.</li>
+    <li><strong>macOS 27 name</strong> — Will they actually call it "Big Bear"? The naming convention signals Apple's priorities and personality. A fun name = confidence. A safe name = caution.</li>
+    <li><strong>Foldable iPhone APIs</strong> — The depth and maturity of foldable APIs will reveal how close the iPhone Fold really is. Are these production-ready or conceptual?</li>
+    <li><strong>CoreAI / dev APIs</strong> — The developer story. CoreAI framework details will determine if the AI platform is real or just Apple Intelligence with a new name.</li>
+    <li><strong>Hardware teases</strong> — Will Apple hint at iPhone Fold, MacBook Pro OLED, or HomePad? Even a "one more thing" moment would send the market into overdrive.</li>
+    <li><strong>Craig Federighi running keynote</strong> — Is this Tim Cook's last WWDC? Does Craig take the lead? The leadership signal matters for Apple's next decade.</li>
+    <li><strong>Privacy narrative</strong> — How does Apple differentiate its AI from OpenAI/Google/Anthropic on privacy? The Private Cloud Compute story needs to be bulletproof.</li>
+  </ol>
+</section>
+
+<!-- CONFIDENCE TABLE -->
+<div class="section-divider"></div>
+<section class="section" id="confidence">
+  <div class="section-header">
+    <div class="section-eyebrow">Consensus Ratings</div>
+    <h2 class="section-title">Confidence Table</h2>
+    <p class="section-desc">How likely is each leak/expectation? Based on cross-referencing supply chain reports, developer beta leaks, journalist sourcing, and historical patterns.</p>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="confidence-table">
+      <thead>
+        <tr>
+          <th style="width:50%;">Prediction</th>
+          <th style="width:20%;">Confidence</th>
+          <th style="width:30%;">Source Strength</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Siri 2.0 announcement</strong></td>
+          <td><span class="badge high">95%+ High</span></td>
+          <td>Multiple supply chain, developer leaks, Apple job postings</td>
+        </tr>
+        <tr>
+          <td><strong>Gemini partnership confirmed</strong></td>
+          <td><span class="badge high">92% High</span></td>
+          <td>Financial filings, Google I/O references, multiple outlets</td>
+        </tr>
+        <tr>
+          <td><strong>Intel Mac support dropped</strong></td>
+          <td><span class="badge high">90%+ High</span></td>
+          <td>Developer beta code references, Apple Silicon roadmap</td>
+        </tr>
+        <tr>
+          <td><strong>Foldable iPhone APIs in iOS 27</strong></td>
+          <td><span class="badge high">90%+ High</span></td>
+          <td>Leaked API frameworks, developer previews</td>
+        </tr>
+        <tr>
+          <td><strong>WWDC keynote on June 8</strong></td>
+          <td><span class="badge high">95%+ High</span></td>
+          <td>Apple's traditional schedule, confirmed by multiple sources</td>
+        </tr>
+        <tr>
+          <td><strong>Stability/refinement year (Snow Leopard)</strong></td>
+          <td><span class="badge high">90%+ High</span></td>
+          <td>Internal Apple communications, developer sentiment</td>
+        </tr>
+        <tr>
+          <td><strong>Siri waitlist / "beta" label</strong></td>
+          <td><span class="badge medium">75% Medium</span></td>
+          <td>Apple's typical AI rollout pattern, supply chain hints</td>
+        </tr>
+        <tr>
+          <td><strong>macOS "Big Bear" name</strong></td>
+          <td><span class="badge medium">70% Medium</span></td>
+          <td>Hashflag filename leak, limited corroboration</td>
+        </tr>
+        <tr>
+          <td><strong>In-house web search demo</strong></td>
+          <td><span class="badge medium">65% Medium</span></td>
+          <td>Patent filings, hiring patterns, journalist reports</td>
+        </tr>
+        <tr>
+          <td><strong>CoreAI framework details</strong></td>
+          <td><span class="badge medium">60% Medium</span></td>
+          <td>Developer forum leaks, partial API references</td>
+        </tr>
+        <tr>
+          <td><strong>Liquid Glass transparency/contrast slider</strong></td>
+          <td><span class="badge medium">55% Medium</span></td>
+          <td>Beta build references, limited confirmation</td>
+        </tr>
+        <tr>
+          <td><strong>HomePad announced at WWDC</strong></td>
+          <td><span class="badge low">40% Low</span></td>
+          <td>Supply chain reports, unclear timing</td>
+        </tr>
+        <tr>
+          <td><strong>"MacBook Ultra" naming</strong></td>
+          <td><span class="badge low">30% Low</span></td>
+          <td>Speculative, no concrete evidence</td>
+        </tr>
+        <tr>
+          <td><strong>Vision Pro 2 announcement</strong></td>
+          <td><span class="badge low">25% Low</span></td>
+          <td>Analyst predictions only, no supply chain confirmation</td>
+        </tr>
+        <tr>
+          <td><strong>AirPods Ultra hardware at WWDC</strong></td>
+          <td><span class="badge low">35% Low</span></td>
+          <td>Rumored for Sept, not WWDC keynote</td>
+        </tr>
+        <tr>
+          <td><strong>M6 chip details</strong></td>
+          <td><span class="badge low">20% Low</span></td>
+          <td>Too early, likely Q4 reveal with MacBook Pro</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>
+    WWDC 2026 Leak Tracker — Compiled from supply chain reports, developer beta analysis, journalist sourcing, and community intelligence.<br>
+    This page reflects the best available information as of the date shown. Not affiliated with Apple Inc.
+  </p>
+  <p class="timestamp" id="lastUpdated"></p>
+</footer>
+
+<script>
+// Sticky nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', updateActiveNav);
+
+// Smooth scroll for nav links
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+    }
+  });
+});
+
+// Last updated timestamp
+document.getElementById('lastUpdated').textContent =
+  'Last updated: ' + new Date().toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+  });
+
+// Animate on scroll
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -40px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.card, .feature-block, .timeline-item, .watch-list li').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
