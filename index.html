@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WWDC 2026 Watch Party</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    background: #000; color: #fff; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, rgba(142,142,255,0.15) 0%, rgba(0,0,0,1) 50%);
+  }
+  .container { text-align: center; padding: 40px 20px; max-width: 500px; }
+  h1 {
+    font-size: 42px; font-weight: 700; letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #8E8EFF, #00D4FF, #FF6B9D);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .subtitle { font-size: 17px; color: #8E8E93; margin-bottom: 48px; }
+  .links { display: flex; flex-direction: column; gap: 16px; }
+  a {
+    display: block; padding: 24px 32px; border-radius: 16px;
+    background: rgba(28,28,30,0.9); border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    text-decoration: none; color: #fff; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  a:hover { transform: scale(1.02); border-color: rgba(255,255,255,0.15); }
+  a .icon { font-size: 32px; margin-bottom: 8px; }
+  a .title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  a .desc { font-size: 14px; color: #8E8E93; }
+  .footer { margin-top: 48px; font-size: 13px; color: #636366; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>WWDC 2026</h1>
+    <p class="subtitle">June 8, 2026 &bull; 10:00 AM PT</p>
+    <div class="links">
+      <a href="wwdc2026-bingo.html">
+        <div class="icon">&#9883;</div>
+        <div class="title">Keynote Bingo</div>
+        <div class="desc">Interactive bingo card for the watch party</div>
+      </a>
+      <a href="wwdc2026-leaks.html">
+        <div class="icon">&#128269;</div>
+        <div class="title">Leak Compilation</div>
+        <div class="desc">Every leak, rumor &amp; expectation</div>
+      </a>
+    </div>
+    <p class="footer">Tap to mark &bull; 5 in a row wins</p>
+  </div>
+</body>
+</html>
